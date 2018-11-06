@@ -18,7 +18,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Gamepad", group="Linear Opmode")  // @Autonomous(...) is the other common choice
+@TeleOp(name="HangingTestGamepad", group="Linear Opmode")  // @Autonomous(...) is the other common choice
 //@Disabled
 public class HangingTestGamepad extends LinearOpMode {
 
@@ -58,7 +58,7 @@ public class HangingTestGamepad extends LinearOpMode {
             telemetry.update();
 
             hangingMotor.setPower(-gamepad1.left_stick_y);
-            hangingMotor.setPower(gamepad1.right_stick_y);
+
             // eg: Run wheels in tank mode (note: The joystick goes negative when pushed forwards)
             // leftMotor.setPower(-gamepad1.left_stick_y);
             // rightMotor.setPower(-gamepad1.right_stick_y);

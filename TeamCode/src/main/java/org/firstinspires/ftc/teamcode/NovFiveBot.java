@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 /**
@@ -19,9 +20,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="GamepadFourMotor", group="Linear Opmode")  // @Autonomous(...) is the other common choice
+@TeleOp(name="NovFiveBot", group="Linear Opmode")  // @Autonomous(...) is the other common choice
 //@Disabled
-public class GamepadFourMotor extends LinearOpMode {
+public class NovFiveBot extends LinearOpMode {
 
     /* Declare OpMode members. */
     private ElapsedTime runtime = new ElapsedTime();
@@ -32,6 +33,11 @@ public class GamepadFourMotor extends LinearOpMode {
     DcMotor rightMotorFront;
     DcMotor leftMotorBack;
     DcMotor rightMotorBack;
+
+    DcMotor armMotor;
+
+    Servo bottomServo;
+    Servo topServo;
 
     @Override
     public void runOpMode() {
@@ -45,6 +51,11 @@ public class GamepadFourMotor extends LinearOpMode {
 
         leftMotorFront.setDirection(DcMotorSimple.Direction.REVERSE);
         leftMotorBack.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        armMotor = hardwareMap.dcMotor.get("Arm_Motor");
+
+        bottomServo = hardwareMap.servo.get("Bottom_Servo");
+        topServo = hardwareMap.servo.get("Top_Servo");
 
         /* eg: Initialize the hardware variables. Note that the strings used here as parameters
          * to 'get' must correspond to the names assigned during the robot configuration
@@ -71,6 +82,8 @@ public class GamepadFourMotor extends LinearOpMode {
             leftMotorBack.setPower(-gamepad1.left_stick_y);
             rightMotorFront.setPower(-gamepad1.right_stick_y);
             rightMotorBack.setPower(-gamepad1.right_stick_y);
+
+            armMotor.setPower(-gamepad1.right_trigger);
 
             // eg: Run wheels in tank mode (note: The joystick goes negative when pushed forwards)
             // leftMotor.setPower(-gamepad1.left_stick_y);
