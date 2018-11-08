@@ -20,9 +20,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="NovFiveBot", group="Linear Opmode")  // @Autonomous(...) is the other common choice
+@TeleOp(name="DayBot", group="Linear Opmode")  // @Autonomous(...) is the other common choice
 //@Disabled
-public class NovFiveBot extends LinearOpMode {
+public class DayBot extends LinearOpMode {
 
     /* Declare OpMode members. */
     private ElapsedTime runtime = new ElapsedTime();
@@ -38,6 +38,8 @@ public class NovFiveBot extends LinearOpMode {
 
     Servo bottomServo;
     Servo topServo;
+
+    double servoPosition = 0;
 
     @Override
     public void runOpMode() {
@@ -56,6 +58,8 @@ public class NovFiveBot extends LinearOpMode {
 
         bottomServo = hardwareMap.servo.get("Bottom_Servo");
         topServo = hardwareMap.servo.get("Top_Servo");
+        bottomServo.setDirection(Servo.Direction.REVERSE);
+        topServo.setDirection(Servo.Direction.REVERSE);
 
         /* eg: Initialize the hardware variables. Note that the strings used here as parameters
          * to 'get' must correspond to the names assigned during the robot configuration
@@ -83,11 +87,30 @@ public class NovFiveBot extends LinearOpMode {
             rightMotorFront.setPower(-gamepad1.right_stick_y);
             rightMotorBack.setPower(-gamepad1.right_stick_y);
 
-            armMotor.setPower(-gamepad1.right_trigger);
+            topServo.setPosition(servoPosition);
+            bottomServo.setPosition(servoPosition);
+            //this piece makes it so that when init is pressed, the servo should move to one end of its range
 
-            // eg: Run wheels in tank mode (note: The joystick goes negative when pushed forwards)
-            // leftMotor.setPower(-gamepad1.left_stick_y);
-            // rightMotor.setPower(-gamepad1.right_stick_y);
+            while (gamepad1.dpad_up == true) ; {
+                armMotor.setPower(1.0);
+            }
+            while (gamepad1.dpad_down == true) ; {
+                armMotor.setPower(-1.0);
+            }
+
+
+            if (gamepad1.y) {
+                // move to 0 degrees.
+                servoPosition = 0;
+            } else if (gamepad1.x || gamepad1.b) {
+                // move to 90 degrees.
+                servoPosition = 0.5;
+            } else if (gamepad1.a) {
+                // move to 180 degrees.
+                servoPosition = 1;
+
+
+            }
         }
     }
 }

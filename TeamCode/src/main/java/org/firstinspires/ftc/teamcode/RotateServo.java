@@ -18,7 +18,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="RotoateServo", group="Linear Opmode")  // @Autonomous(...) is the other common choice
+@Autonomous(name="RotateServo", group="Linear Opmode")  // @Autonomous(...) is the other common choice
 //@Disabled
 public class RotateServo extends LinearOpMode {
 

@@ -27,8 +27,8 @@ public class RotateTwoServos extends LinearOpMode {
     // DcMotor leftMotor = null;
     // DcMotor rightMotor = null;
 
-    Servo leftServo;
-    Servo rightServo;
+    Servo topServo;
+    Servo bottomServo;
     double servoPosition = 0.0;
 
     /** note from tutorial
@@ -43,28 +43,29 @@ public class RotateTwoServos extends LinearOpMode {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
-        leftServo = hardwareMap.servo.get("Left_Servo");
-        rightServo = hardwareMap.servo.get("Right_Servo");
+        topServo = hardwareMap.servo.get("Top_Servo");
+        bottomServo = hardwareMap.servo.get("Bottom_Servo");
 
         //make sure the name is quotations is the same name used in the robot configuration
-        leftServo.setPosition(servoPosition);
-        rightServo.setPosition(servoPosition);
+        topServo.setPosition(servoPosition);
+        bottomServo.setPosition(servoPosition);
         //this piece makes it so that when init is pressed, the servo should move to one end of its range
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         runtime.reset();
 
-        servoPosition = 0.5;
-        leftServo.setPosition(servoPosition);
-        rightServo.setPosition(servoPosition);
+       /* servoPosition = 0.5;
+        topServo.setPosition(servoPosition);
+        bottomServo.setPosition(servoPosition);
         sleep(2000); //tells robot to "sleep" 2 seconds before executing the next task
         // this piece makes it so that once the start button is pressed, the servo should move to the middle of its range
         //then wait 2 seconds, then
+        */
 
         servoPosition = 1.0;
-        leftServo.setPosition(servoPosition);
-        rightServo.setPosition(servoPosition);
+        topServo.setPosition(servoPosition);
+        bottomServo.setPosition(servoPosition);
         //this piece makes it move to the other end of its range
     }
 }
