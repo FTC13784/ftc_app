@@ -4,8 +4,10 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+//updated 8 nov
 /**
  * This file contains an minimal example of a Linear "OpMode". An OpMode is a 'program' that runs in either
  * the autonomous or the teleop period of an FTC match. The names of OpModes appear on the menu
@@ -19,9 +21,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="GamepadFourMotor", group="Linear Opmode")  // @Autonomous(...) is the other common choice
+@TeleOp(name="OurBot", group="Linear Opmode")  // @Autonomous(...) is the other common choice
 //@Disabled
-public class GamepadFourMotor extends LinearOpMode {
+public class OurBot extends LinearOpMode {
 
     /* Declare OpMode members. */
     private ElapsedTime runtime = new ElapsedTime();
@@ -32,6 +34,12 @@ public class GamepadFourMotor extends LinearOpMode {
     DcMotor rightMotorFront;
     DcMotor leftMotorBack;
     DcMotor rightMotorBack;
+
+    DcMotor intakeMotor;
+    DcMotor outputMotor;
+
+    DcMotor hangingMotor;
+
 
     @Override
     public void runOpMode() {
@@ -45,7 +53,12 @@ public class GamepadFourMotor extends LinearOpMode {
 
         leftMotorFront.setDirection(DcMotorSimple.Direction.REVERSE);
         leftMotorBack.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightMotorFront.setDirection(DcMotorSimple.Direction.FORWARD);
 
+        intakeMotor = hardwareMap.dcMotor.get("Intake_Motor");
+        outputMotor = hardwareMap.dcMotor.get("Output_Motor");
+
+        hangingMotor = hardwareMap.dcMotor.get("Hanging_Motor");
         /* eg: Initialize the hardware variables. Note that the strings used here as parameters
          * to 'get' must correspond to the names assigned during the robot configuration
          * step (using the FTC Robot Controller app on the phone).
@@ -72,11 +85,17 @@ public class GamepadFourMotor extends LinearOpMode {
             rightMotorFront.setPower(-gamepad1.right_stick_y);
             rightMotorBack.setPower(-gamepad1.right_stick_y);
 
+            intakeMotor.setPower(-gamepad1.right_trigger);
+            outputMotor.setPower(-gamepad1.left_trigger);
 
-
-            // eg: Run wheels in tank mode (note: The joystick goes negative when pushed forwards)
-            // leftMotor.setPower(-gamepad1.left_stick_y);
-            // rightMotor.setPower(-gamepad1.right_stick_y);
+            while (gamepad1.dpad_up);
+            {
+                hangingMotor.setPower(0.5);
+            }
+            while(gamepad1.dpad_down); {
+                hangingMotor.setPower(-0.5);
+            }
         }
-    }
+
+     }
 }

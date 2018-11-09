@@ -82,10 +82,10 @@ public class DayBot extends LinearOpMode {
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.update();
 
-            leftMotorFront.setPower(-gamepad1.left_stick_y);
-            leftMotorBack.setPower(-gamepad1.left_stick_y);
-            rightMotorFront.setPower(-gamepad1.right_stick_y);
-            rightMotorBack.setPower(-gamepad1.right_stick_y);
+            leftMotorFront.setPower(-gamepad1.left_trigger);
+            leftMotorBack.setPower(-gamepad1.left_trigger);
+            rightMotorFront.setPower(-gamepad1.right_trigger);
+            rightMotorBack.setPower(-gamepad1.right_trigger);
 
             topServo.setPosition(servoPosition);
             bottomServo.setPosition(servoPosition);
@@ -99,18 +99,15 @@ public class DayBot extends LinearOpMode {
             }
 
 
-            if (gamepad1.y) {
+            if (gamepad1.dpad_left) {
                 // move to 0 degrees.
                 servoPosition = 0;
-            } else if (gamepad1.x || gamepad1.b) {
+            } else if (gamepad1.dpad_right) {
                 // move to 90 degrees.
                 servoPosition = 0.5;
-            } else if (gamepad1.a) {
-                // move to 180 degrees.
-                servoPosition = 1;
+            }
 
 
             }
         }
     }
-}
