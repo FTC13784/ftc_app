@@ -1,13 +1,12 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-//updated 8 nov
 /**
  * This file contains an minimal example of a Linear "OpMode". An OpMode is a 'program' that runs in either
  * the autonomous or the teleop period of an FTC match. The names of OpModes appear on the menu
@@ -21,9 +20,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="OurBot", group="Linear Opmode")  // @Autonomous(...) is the other common choice
+@Autonomous(name="OurAutonomousSample", group="Linear Opmode")  // @Autonomous(...) is the other common choice
 //@Disabled
-public class OurBot extends LinearOpMode {
+public class OurAutonomousSample extends LinearOpMode {
 
     /* Declare OpMode members. */
     private ElapsedTime runtime = new ElapsedTime();
@@ -40,12 +39,21 @@ public class OurBot extends LinearOpMode {
 
     DcMotor hangingMotor;
 
-
     @Override
-    public void runOpMode() {
+    public void runOpMode() throws InterruptedException {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
+       InitializeHardware();
+
+        waitForStart();
+        runtime.reset();
+
+        //put instructions in here
+    }
+
+    public void InitializeHardware()
+    {
         leftMotorFront = hardwareMap.dcMotor.get("Left_Front");
         rightMotorFront = hardwareMap.dcMotor.get("Right_Front");
         leftMotorBack = hardwareMap.dcMotor.get("Left_Back");
@@ -54,48 +62,65 @@ public class OurBot extends LinearOpMode {
         leftMotorFront.setDirection(DcMotorSimple.Direction.REVERSE);
         leftMotorBack.setDirection(DcMotorSimple.Direction.REVERSE);
         rightMotorFront.setDirection(DcMotorSimple.Direction.FORWARD);
+        rightMotorBack.setDirection(DcMotorSimple.Direction.FORWARD);
 
         intakeMotor = hardwareMap.dcMotor.get("Intake");
         armMotor = hardwareMap.dcMotor.get("Intake_Arm");
 
         hangingMotor = hardwareMap.dcMotor.get("Hanging_Motor");
-        /* eg: Initialize the hardware variables. Note that the strings used here as parameters
-         * to 'get' must correspond to the names assigned during the robot configuration
-         * step (using the FTC Robot Controller app on the phone).
-         */
-        // leftMotor  = hardwareMap.dcMotor.get("left_drive");
-        // rightMotor = hardwareMap.dcMotor.get("right_drive");
+    }
 
-        // eg: Set the drive motor directions:
-        // "Reverse" the motor that runs backwards when connected directly to the battery
-        // leftMotor.setDirection(DcMotor.Direction.FORWARD); // Set to REVERSE if using AndyMark motors
-        // rightMotor.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
+    double DRIVE_POWER = 1.0;
 
-        // Wait for the game to start (driver presses PLAY)
-        waitForStart();
-        runtime.reset();
+    public void DriveForward(double power)
+    {
+        leftMotorFront.setPower(power);
+        leftMotorBack.setPower(power);
+        rightMotorFront.setPower(power);
+        rightMotorBack.setPower(power);
+    }
 
-        // run until the end of the match (driver presses STOP)
-        while (opModeIsActive()) {
-            telemetry.addData("Status", "Run Time: " + runtime.toString());
-            telemetry.update();
+    public void DriveForwardTime(double power, long time) throws InterruptedException
+    {
+        DriveForward(power);
+        Thread.sleep(time);
+    }
 
-            leftMotorFront.setPower(-gamepad1.left_stick_y*0.5);
-            leftMotorBack.setPower(-gamepad1.left_stick_y*0.5);
-            rightMotorFront.setPower(-gamepad1.right_stick_y*0.5);
-            rightMotorBack.setPower(-gamepad1.right_stick_y*0.5);
+    public void StopDriving()
+    {
+        DriveForward(0);
+    }
 
-            intakeMotor.setPower(-gamepad1.right_trigger);
-            armMotor.setPower(-gamepad1.left_trigger);
+    public void StopDrivingTime(double power, long time) throws InterruptedException
+    {
+        StopDriving();
+        Thread.sleep(time);
+    }
 
-            while (gamepad1.dpad_up);
-            {
-                hangingMotor.setPower(0.5);
-            }
-            while(gamepad1.dpad_down); {
-                hangingMotor.setPower(-0.5);
-            }
-        }
+    public void TurnLeft(double power)
+    {
+        leftMotorFront.setPower(-power);
+        leftMotorBack.setPower(-power);
+        rightMotorFront.setPower(power);
+        rightMotorBack.setPower(power);
+    }
 
-     }
+    public void TurnLeftTime(double power, long time) throws InterruptedException
+    {
+        TurnLeft(power);
+        Thread.sleep(time);
+    }
+
+    public void TurnRight(double power)
+    {
+        TurnLeft(-power);
+    }
+
+    public void TurnRightTime(double power, long time) throws InterruptedException
+    {
+        TurnRight(power);
+        Thread.sleep(time);
+    }
+
+
 }
