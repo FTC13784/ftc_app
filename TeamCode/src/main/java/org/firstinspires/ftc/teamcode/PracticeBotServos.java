@@ -76,13 +76,13 @@ public class PracticeBotServos extends LinearOpMode {
 
             while(gamepad1.dpad_left == true) {
                 // servos open
-                servoPosition = 0.5;
+                servoPosition = 0.8;
                 leftServo.setPosition(servoPosition);
                 rightServo.setPosition(servoPosition);
             }
             while(gamepad1.dpad_right == true) {
                 // servos close
-                servoPosition = 0.0;
+                servoPosition = 0.2;
                 leftServo.setPosition(servoPosition);
                 rightServo.setPosition(servoPosition);
             }

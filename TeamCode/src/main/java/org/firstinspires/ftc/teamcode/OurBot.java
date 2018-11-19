@@ -46,30 +46,7 @@ public class OurBot extends LinearOpMode {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
-        leftMotorFront = hardwareMap.dcMotor.get("Left_Front");
-        rightMotorFront = hardwareMap.dcMotor.get("Right_Front");
-        leftMotorBack = hardwareMap.dcMotor.get("Left_Back");
-        rightMotorBack = hardwareMap.dcMotor.get("Right_Back");
-
-        leftMotorFront.setDirection(DcMotorSimple.Direction.REVERSE);
-        leftMotorBack.setDirection(DcMotorSimple.Direction.REVERSE);
-        rightMotorFront.setDirection(DcMotorSimple.Direction.FORWARD);
-
-        intakeMotor = hardwareMap.dcMotor.get("Intake");
-        armMotor = hardwareMap.dcMotor.get("Intake_Arm");
-
-        hangingMotor = hardwareMap.dcMotor.get("Hanging_Motor");
-        /* eg: Initialize the hardware variables. Note that the strings used here as parameters
-         * to 'get' must correspond to the names assigned during the robot configuration
-         * step (using the FTC Robot Controller app on the phone).
-         */
-        // leftMotor  = hardwareMap.dcMotor.get("left_drive");
-        // rightMotor = hardwareMap.dcMotor.get("right_drive");
-
-        // eg: Set the drive motor directions:
-        // "Reverse" the motor that runs backwards when connected directly to the battery
-        // leftMotor.setDirection(DcMotor.Direction.FORWARD); // Set to REVERSE if using AndyMark motors
-        // rightMotor.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
+        InitializeHardware();
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
@@ -85,8 +62,9 @@ public class OurBot extends LinearOpMode {
             rightMotorFront.setPower(-gamepad1.right_stick_y*0.5);
             rightMotorBack.setPower(-gamepad1.right_stick_y*0.5);
 
-            intakeMotor.setPower(-gamepad1.right_trigger);
+           /* intakeMotor.setPower(-gamepad1.right_trigger);
             armMotor.setPower(-gamepad1.left_trigger);
+            */
 
             while (gamepad1.dpad_up);
             {
@@ -98,4 +76,23 @@ public class OurBot extends LinearOpMode {
         }
 
      }
+
+    public void InitializeHardware()
+    {
+        leftMotorFront = hardwareMap.dcMotor.get("Left_Front");
+        rightMotorFront = hardwareMap.dcMotor.get("Right_Front");
+        leftMotorBack = hardwareMap.dcMotor.get("Left_Back");
+        rightMotorBack = hardwareMap.dcMotor.get("Right_Back");
+
+        leftMotorFront.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftMotorBack.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightMotorFront.setDirection(DcMotorSimple.Direction.FORWARD);
+        rightMotorBack.setDirection(DcMotorSimple.Direction.FORWARD);
+
+        intakeMotor = hardwareMap.dcMotor.get("Intake");
+        armMotor = hardwareMap.dcMotor.get("Intake_Arm");
+
+        hangingMotor = hardwareMap.dcMotor.get("Hanging_Motor");
+
+    }
 }
