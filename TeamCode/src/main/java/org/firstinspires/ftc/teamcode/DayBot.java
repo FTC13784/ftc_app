@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -21,7 +22,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  */
 
 @TeleOp(name="DayBot", group="Linear Opmode")  // @Autonomous(...) is the other common choice
-//@Disabled
+@Disabled
 public class DayBot extends LinearOpMode {
 
     /* Declare OpMode members. */
@@ -34,44 +35,25 @@ public class DayBot extends LinearOpMode {
     DcMotor leftMotorBack;
     DcMotor rightMotorBack;
 
-    DcMotor armMotor;
+    DcMotor rightArmMotor;
+    DcMotor leftArmMotor;
 
-    Servo bottomServo;
-    Servo topServo;
+    Servo bottomLeftServo;
+    Servo topLeftServo;
+    Servo bottomRightServo;
+    Servo topRightServo;
 
     double servoPosition = 0;
+    public final static double ARM_HOME = 0.2; // starting position for servo arms
+    public final static double ARM_MIN_RANGE = 0.0;
+    public final static double ARM_MAX_RANGE = 0.5;
 
     @Override
     public void runOpMode() {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
-        leftMotorFront = hardwareMap.dcMotor.get("Left_Front");
-        rightMotorFront = hardwareMap.dcMotor.get("Right_Front");
-        leftMotorBack = hardwareMap.dcMotor.get("Left_Back");
-        rightMotorBack = hardwareMap.dcMotor.get("Right_Back");
-
-        leftMotorFront.setDirection(DcMotorSimple.Direction.REVERSE);
-        leftMotorBack.setDirection(DcMotorSimple.Direction.REVERSE);
-
-        armMotor = hardwareMap.dcMotor.get("Arm_Motor");
-
-        bottomServo = hardwareMap.servo.get("Bottom_Servo");
-        topServo = hardwareMap.servo.get("Top_Servo");
-        bottomServo.setDirection(Servo.Direction.REVERSE);
-        topServo.setDirection(Servo.Direction.REVERSE);
-
-        /* eg: Initialize the hardware variables. Note that the strings used here as parameters
-         * to 'get' must correspond to the names assigned during the robot configuration
-         * step (using the FTC Robot Controller app on the phone).
-         */
-        // leftMotor  = hardwareMap.dcMotor.get("left_drive");
-        // rightMotor = hardwareMap.dcMotor.get("right_drive");
-
-        // eg: Set the drive motor directions:
-        // "Reverse" the motor that runs backwards when connected directly to the battery
-        // leftMotor.setDirection(DcMotor.Direction.FORWARD); // Set to REVERSE if using AndyMark motors
-        // rightMotor.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
+        InitializeHardware();
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
@@ -82,32 +64,70 @@ public class DayBot extends LinearOpMode {
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.update();
 
-            leftMotorFront.setPower(-gamepad1.left_trigger);
-            leftMotorBack.setPower(-gamepad1.left_trigger);
-            rightMotorFront.setPower(-gamepad1.right_trigger);
-            rightMotorBack.setPower(-gamepad1.right_trigger);
+            leftMotorFront.setPower(-gamepad1.left_stick_y);
+            leftMotorBack.setPower(-gamepad1.left_stick_y);
+            rightMotorFront.setPower(-gamepad1.right_stick_y);
+            rightMotorBack.setPower(-gamepad1.right_stick_y);
 
-            topServo.setPosition(servoPosition);
-            bottomServo.setPosition(servoPosition);
+           /*
+           bottomLeftServo .setPosition(ARM_HOME);
+            topLeftServo.setPosition(ARM_HOME);
+            bottomRightServo.setPosition(ARM_HOME);
+            topRightServo.setPosition(ARM_HOME);
+            */
+
+            bottomLeftServo.setPosition(ARM_HOME);
+            topLeftServo.setPosition(ARM_HOME);
+            bottomRightServo.setPosition(ARM_HOME);
+            topRightServo.setPosition(ARM_HOME);
+
             //this piece makes it so that when init is pressed, the servo should move to one end of its range
 
             while (gamepad1.dpad_up == true) ; {
-                armMotor.setPower(1.0);
+                leftArmMotor.setPower(1.0);
             }
             while (gamepad1.dpad_down == true) ; {
-                armMotor.setPower(-1.0);
+                leftArmMotor.setPower(-0.5);
             }
 
+
+            while (gamepad1.y == true) ; {
+                rightArmMotor.setPower(1.0);
+            }
+            while (gamepad1.a == true) ; {
+                rightArmMotor.setPower(-0.5);
+            }
 
             if (gamepad1.dpad_left) {
                 // move to 0 degrees.
-                servoPosition = 0;
+                servoPosition = ARM_MIN_RANGE;
             } else if (gamepad1.dpad_right) {
-                // move to 90 degrees.
-                servoPosition = 0.5;
+                // move to 144 degrees.
+                servoPosition = ARM_MAX_RANGE;
             }
+        }
+    }
 
+        public void InitializeHardware(){
+            leftMotorFront = hardwareMap.dcMotor.get("Left_Front");
+            rightMotorFront = hardwareMap.dcMotor.get("Right_Front");
+            leftMotorBack = hardwareMap.dcMotor.get("Left_Back");
+            rightMotorBack = hardwareMap.dcMotor.get("Right_Back");
 
-            }
+            leftMotorFront.setDirection(DcMotorSimple.Direction.REVERSE);
+            leftMotorBack.setDirection(DcMotorSimple.Direction.REVERSE);
+            rightMotorFront.setDirection(DcMotorSimple.Direction.FORWARD);
+            rightMotorBack.setDirection(DcMotorSimple.Direction.FORWARD);
+
+            rightArmMotor = hardwareMap.dcMotor.get("Right_Arm");
+            leftArmMotor = hardwareMap.dcMotor.get("Left_Arm");
+
+            rightArmMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            leftArmMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+            bottomLeftServo = hardwareMap.servo.get("Bottom_Left_Servo");
+            topLeftServo = hardwareMap.servo.get("Top_Left_Servo");
+            bottomRightServo = hardwareMap.servo.get("Bottom_Right_Servo");
+            topRightServo = hardwareMap.servo.get("Top_Right_Servo");
         }
     }

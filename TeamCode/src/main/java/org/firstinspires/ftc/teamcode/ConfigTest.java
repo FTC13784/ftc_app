@@ -20,36 +20,39 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Intake", group="Linear Opmode")  // @Autonomous(...) is the other common choice
-@Disabled
-public class Intake extends LinearOpMode {
+@TeleOp(name="ConfigTest", group="Linear Opmode")  // @Autonomous(...) is the other common choice
+//@Disabled
+public class ConfigTest extends LinearOpMode {
 
     /* Declare OpMode members. */
     private ElapsedTime runtime = new ElapsedTime();
     // DcMotor leftMotor = null;
     // DcMotor rightMotor = null;
 
-    DcMotor intakeMotor;
+    DcMotor c1p1;
+    DcMotor c1p2;
+    DcMotor c2p1;
+    DcMotor c2p2;
+    DcMotor c3p1;
+    // DcMotor c3p2;
+    DcMotor c4p1;
+    DcMotor c4p2;
+
 
     @Override
     public void runOpMode() {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
-        intakeMotor = hardwareMap.dcMotor.get("Intake_Motor");
+        c1p1 = hardwareMap.dcMotor.get("c1p1");
+        c1p2 = hardwareMap.dcMotor.get("c1p2");
+        c2p1 = hardwareMap.dcMotor.get("c2p1");
+        c2p2 = hardwareMap.dcMotor.get("c2p2");
 
-
-        /* eg: Initialize the hardware variables. Note that the strings used here as parameters
-         * to 'get' must correspond to the names assigned during the robot configuration
-         * step (using the FTC Robot Controller app on the phone).
-         */
-        // leftMotor  = hardwareMap.dcMotor.get("left_drive");
-        // rightMotor = hardwareMap.dcMotor.get("right_drive");
-
-        // eg: Set the drive motor directions:
-        // "Reverse" the motor that runs backwards when connected directly to the battery
-        // leftMotor.setDirection(DcMotor.Direction.FORWARD); // Set to REVERSE if using AndyMark motors
-        // rightMotor.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
+        c3p1 = hardwareMap.dcMotor.get("c3p1");
+        // c3p2 = hardwareMap.dcMotor.get("c3p2");
+        c4p1 = hardwareMap.dcMotor.get("c4p1");
+        c4p2 = hardwareMap.dcMotor.get("c4p2");
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
@@ -60,12 +63,38 @@ public class Intake extends LinearOpMode {
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.update();
 
-            intakeMotor.setPower(-gamepad1.left_stick_y);
+            while (gamepad1.dpad_up == true) ; {
+                c1p1.setPower(1.0);
+            }
 
-            // eg: Run wheels in tank mode (note: The joystick goes negative when pushed forwards)
-            // leftMotor.setPower(-gamepad1.left_stick_y);
-            // rightMotor.setPower(-gamepad1.right_stick_y);
+            while (gamepad1.dpad_right == true) ; {
+                c1p2.setPower(1.0);
+            }
+
+            while (gamepad1.dpad_down == true) ; {
+                c2p1.setPower(1.0);
+            }
+
+            while (gamepad1.dpad_left == true) ; {
+                c2p2.setPower(1.0);
+            }
+
+            while (gamepad1.y == true) ; {
+                c3p1.setPower(1.0);
+            }
+
+            /*while (gamepad1.b == true) ; {
+                c3p2.setPower(1.0);
+            }
+            */
+
+            while (gamepad1.a == true) ; {
+                c4p1.setPower(1.0);
+            }
+
+            while (gamepad1.x == true) ; {
+                c4p2.setPower(1.0);
+            }
         }
     }
 }
-

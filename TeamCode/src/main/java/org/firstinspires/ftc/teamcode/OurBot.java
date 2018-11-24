@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -22,7 +23,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  */
 
 @TeleOp(name="OurBot", group="Linear Opmode")  // @Autonomous(...) is the other common choice
-//@Disabled
+@Disabled
 public class OurBot extends LinearOpMode {
 
     /* Declare OpMode members. */
@@ -57,10 +58,10 @@ public class OurBot extends LinearOpMode {
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.update();
 
-            leftMotorFront.setPower(-gamepad1.left_stick_y*0.5);
-            leftMotorBack.setPower(-gamepad1.left_stick_y*0.5);
-            rightMotorFront.setPower(-gamepad1.right_stick_y*0.5);
-            rightMotorBack.setPower(-gamepad1.right_stick_y*0.5);
+            leftMotorFront.setPower(-gamepad1.left_stick_y*0.7);
+            leftMotorBack.setPower(-gamepad1.left_stick_y*0.7);
+            rightMotorFront.setPower(-gamepad1.right_stick_y*0.7);
+            rightMotorBack.setPower(-gamepad1.right_stick_y*0.7);
 
            /* intakeMotor.setPower(-gamepad1.right_trigger);
             armMotor.setPower(-gamepad1.left_trigger);
