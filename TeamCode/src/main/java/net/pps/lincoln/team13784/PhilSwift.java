@@ -10,18 +10,18 @@ public class PhilSwift {
 
 
     DcMotor intakeMotor = null;
-    DcMotor armMotor = null;
+    DcMotor lifterMotor = null;
 
     DcMotor hangingMotor = null;
 
     HardwareMap hardwareMap = null;
 
-    double ticksPerCm = 0;
+    double ticksPerIn = 0;
 
     public PhilSwift(HardwareMap map, double wheelRadius, double ticksPerRev) {
         hardwareMap = map;
         InitializeHardware();
-        ticksPerCm = ticksPerRev/(wheelRadius*Math.PI*2);
+        ticksPerIn = ticksPerRev / (wheelRadius * Math.PI * 2);
     }
 
     private void InitializeHardware() {
@@ -35,26 +35,27 @@ public class PhilSwift {
         allDrive[1] = hardwareMap.dcMotor.get("Left_Back");
         allDrive[2] = hardwareMap.dcMotor.get("Right_Front");
         allDrive[3] = hardwareMap.dcMotor.get("Right_Back");
+
+        intakeMotor = hardwareMap.dcMotor.get("Intake");
+        lifterMotor = hardwareMap.dcMotor.get("Intake_Lifter");
+
+        hangingMotor = hardwareMap.dcMotor.get("Hanging");
     }
 
-    private void setMode (DcMotor[] motors, DcMotor.RunMode mode){
-        for (DcMotor motor : motors){
+    private void setMode(DcMotor[] motors, DcMotor.RunMode mode) {
+        for (DcMotor motor : motors) {
             motor.setMode(mode);
         }
     }
 
-    private void setDistance (DcMotor[] motors, double distance){
-        /*
-        how many ticks for 1 cm?
-        =(TICKS_PER_REV*1)/(PI()*2*R_OF_WHEEL)
-         */
-        double target = distance*ticksPerCm;
-        for(DcMotor motor : motors){
+    private void setDistance(DcMotor[] motors, double distance) {
+        double target = distance * ticksPerIn;
+        for (DcMotor motor : motors) {
             motor.setTargetPosition((int) Math.round(target));
         }
     }
 
-    private boolean isBusy (DcMotor[] motors) {
+    private boolean isBusy(DcMotor[] motors) {
         for (DcMotor motor : motors) {
             if (motor.isBusy()) {
                 return true;
@@ -63,11 +64,12 @@ public class PhilSwift {
         return false;
     }
 
-    private void setPower (DcMotor[] motors, double power){
-        for(DcMotor motor : motors){
+    private void setPower(DcMotor[] motors, double power) {
+        for (DcMotor motor : motors) {
             motor.setPower(power);
         }
     }
+
     /**
      * drive distance specified
      * positive distance is forward, negative distance is backward
@@ -116,7 +118,7 @@ public class PhilSwift {
     /**
      * lowers robot down from hanging mechanism, assumes that robot is already hanging when this is called
      *
-     * @param distance distance in cm
+     * @param distance distance in inches
      * @param speed    speed btwn 0 and 1
      */
     public void lowerMe(double distance, double speed) {

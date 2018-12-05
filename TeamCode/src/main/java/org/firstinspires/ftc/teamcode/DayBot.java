@@ -43,11 +43,6 @@ public class DayBot extends LinearOpMode {
     Servo bottomRightServo;
     Servo topRightServo;
 
-    double servoPosition = 0;
-    public final static double ARM_HOME = 0.2; // starting position for servo arms
-    public final static double ARM_MIN_RANGE = 0.0;
-    public final static double ARM_MAX_RANGE = 0.5;
-
     @Override
     public void runOpMode() {
         telemetry.addData("Status", "Initialized");
@@ -69,18 +64,8 @@ public class DayBot extends LinearOpMode {
             rightMotorFront.setPower(-gamepad1.right_stick_y);
             rightMotorBack.setPower(-gamepad1.right_stick_y);
 
-           /*
-           bottomLeftServo .setPosition(ARM_HOME);
-            topLeftServo.setPosition(ARM_HOME);
-            bottomRightServo.setPosition(ARM_HOME);
-            topRightServo.setPosition(ARM_HOME);
-            */
 
-            bottomLeftServo.setPosition(ARM_HOME);
-            topLeftServo.setPosition(ARM_HOME);
-            bottomRightServo.setPosition(ARM_HOME);
-            topRightServo.setPosition(ARM_HOME);
-
+            /*
             //this piece makes it so that when init is pressed, the servo should move to one end of its range
 
             while (gamepad1.dpad_up == true) ; {
@@ -97,14 +82,8 @@ public class DayBot extends LinearOpMode {
             while (gamepad1.a == true) ; {
                 rightArmMotor.setPower(-0.5);
             }
+            **/
 
-            if (gamepad1.dpad_left) {
-                // move to 0 degrees.
-                servoPosition = ARM_MIN_RANGE;
-            } else if (gamepad1.dpad_right) {
-                // move to 144 degrees.
-                servoPosition = ARM_MAX_RANGE;
-            }
         }
     }
 
@@ -124,6 +103,8 @@ public class DayBot extends LinearOpMode {
 
             rightArmMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             leftArmMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            leftArmMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+            rightArmMotor.setDirection(DcMotorSimple.Direction.FORWARD);
 
             bottomLeftServo = hardwareMap.servo.get("Bottom_Left_Servo");
             topLeftServo = hardwareMap.servo.get("Top_Left_Servo");

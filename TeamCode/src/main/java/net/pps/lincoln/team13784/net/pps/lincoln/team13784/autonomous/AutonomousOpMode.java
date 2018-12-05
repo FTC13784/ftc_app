@@ -10,21 +10,21 @@ import net.pps.lincoln.team13784.PhilSwift;
 
 
 @Autonomous(name = "AutonomousOpMode", group = "Linear Opmode")
-// @Teleop(...) is the other common choice
-// @Disabled
+//@Disabled
 public class AutonomousOpMode extends LinearOpMode {
 
     PhilSwift philSwift = null;
 
     @Override
     public void runOpMode() throws InterruptedException {
-        philSwift = new PhilSwift(hardwareMap, 5, 1120);
+        //distance & wheelRadius measurements in inches
+        philSwift = new PhilSwift(hardwareMap, 2, 103);
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
         waitForStart();
 
-        philSwift.drive(400, 0.7);
+        philSwift.drive(20, 0.7);
     }
 
 }

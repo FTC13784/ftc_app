@@ -8,22 +8,21 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-//updated 8 nov
 /**
  * This file contains an minimal example of a Linear "OpMode". An OpMode is a 'program' that runs in either
  * the autonomous or the teleop period of an FTC match. The names of OpModes appear on the menu
  * of the FTC Driver Station. When an selection is made from the menu, the corresponding OpMode
  * class is instantiated on the Robot Controller and executed.
- *
+ * <p>
  * This particular OpMode just executes a basic Tank Drive Teleop for a PushBot
  * It includes all the skeletal structure that all linear OpModes contain.
- *
+ * <p>
  * Use Android Studios to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="OurBot", group="Linear Opmode")  // @Autonomous(...) is the other common choice
-@Disabled
+@TeleOp(name = "OurBot", group = "Linear Opmode")  // @Autonomous(...) is the other common choice
+//@Disabled
 public class OurBot extends LinearOpMode {
 
     /* Declare OpMode members. */
@@ -31,16 +30,48 @@ public class OurBot extends LinearOpMode {
     // DcMotor leftMotor = null;
     // DcMotor rightMotor = null;
 
-    DcMotor leftMotorFront;
-    DcMotor rightMotorFront;
-    DcMotor leftMotorBack;
-    DcMotor rightMotorBack;
+    DcMotor[] leftDrive = null;
+    DcMotor[] rightDrive = null;
+    DcMotor[] allDrive = null;
 
-    DcMotor intakeMotor;
-    DcMotor armMotor;
 
-    DcMotor hangingMotor;
+    DcMotor intakeMotor = null;
+    DcMotor lifterMotor = null;
 
+    DcMotor hangingMotor = null;
+
+    public void InitializeHardware() {
+        leftDrive[0] = hardwareMap.dcMotor.get("Left_Front");
+        leftDrive[1] = hardwareMap.dcMotor.get("Left_Back");
+
+        rightDrive[0] = hardwareMap.dcMotor.get("Right_Front");
+        rightDrive[1] = hardwareMap.dcMotor.get("Right_Back");
+
+        allDrive[0] = hardwareMap.dcMotor.get("Left_Front");
+        allDrive[1] = hardwareMap.dcMotor.get("Left_Back");
+        allDrive[2] = hardwareMap.dcMotor.get("Right_Front");
+        allDrive[3] = hardwareMap.dcMotor.get("Right_Back");
+
+        setMode(allDrive, DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        intakeMotor = hardwareMap.dcMotor.get("Intake");
+        lifterMotor = hardwareMap.dcMotor.get("Intake_Lifter");
+
+        hangingMotor = hardwareMap.dcMotor.get("Hanging");
+    }
+
+
+    private void setMode(DcMotor[] motors, DcMotor.RunMode mode) {
+        for (DcMotor motor : motors) {
+            motor.setMode(mode);
+        }
+    }
+
+    private void setPower(DcMotor[] motors, double power) {
+        for (DcMotor motor : motors) {
+            motor.setPower(power);
+        }
+    }
 
     @Override
     public void runOpMode() {
@@ -58,42 +89,33 @@ public class OurBot extends LinearOpMode {
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.update();
 
-            leftMotorFront.setPower(-gamepad1.left_stick_y*0.7);
-            leftMotorBack.setPower(-gamepad1.left_stick_y*0.7);
-            rightMotorFront.setPower(-gamepad1.right_stick_y*0.7);
-            rightMotorBack.setPower(-gamepad1.right_stick_y*0.7);
+            double leftPower = -gamepad1.left_stick_y;
+            double rightPower = -gamepad1.right_stick_y;
+
+            setPower(leftDrive, leftPower);
+            setPower(rightDrive, rightPower);
+
+            /*
+            leftMotorFront.setPower(-gamepad1.left_stick_y);
+            leftMotorBack.setPower(-gamepad1.left_stick_y);
+            rightMotorFront.setPower(-gamepad1.right_stick_y);
+            rightMotorBack.setPower(-gamepad1.right_stick_y);
+            */
 
            /* intakeMotor.setPower(-gamepad1.right_trigger);
             armMotor.setPower(-gamepad1.left_trigger);
             */
 
-            while (gamepad1.dpad_up);
+            while (gamepad1.dpad_up) ;
             {
                 hangingMotor.setPower(0.5);
             }
-            while(gamepad1.dpad_down); {
+            while (gamepad1.dpad_down) ;
+            {
                 hangingMotor.setPower(-0.5);
             }
         }
 
-     }
-
-    public void InitializeHardware()
-    {
-        leftMotorFront = hardwareMap.dcMotor.get("Left_Front");
-        rightMotorFront = hardwareMap.dcMotor.get("Right_Front");
-        leftMotorBack = hardwareMap.dcMotor.get("Left_Back");
-        rightMotorBack = hardwareMap.dcMotor.get("Right_Back");
-
-        leftMotorFront.setDirection(DcMotorSimple.Direction.REVERSE);
-        leftMotorBack.setDirection(DcMotorSimple.Direction.REVERSE);
-        rightMotorFront.setDirection(DcMotorSimple.Direction.FORWARD);
-        rightMotorBack.setDirection(DcMotorSimple.Direction.FORWARD);
-
-        intakeMotor = hardwareMap.dcMotor.get("Intake");
-        armMotor = hardwareMap.dcMotor.get("Intake_Arm");
-
-        hangingMotor = hardwareMap.dcMotor.get("Hanging_Motor");
-
     }
+
 }
