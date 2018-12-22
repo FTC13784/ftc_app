@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-@TeleOp(name="Skeleton Op Mode", group="TeleOp")
+@TeleOp(name="SkeletonOpMode", group="TeleOp")
 @Disabled
 public class SkeletonOpMode extends OpMode {
     @Override

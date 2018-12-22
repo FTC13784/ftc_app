@@ -8,39 +8,86 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-/**
- * This file contains an minimal example of a Linear "OpMode". An OpMode is a 'program' that runs in either
- * the autonomous or the teleop period of an FTC match. The names of OpModes appear on the menu
- * of the FTC Driver Station. When an selection is made from the menu, the corresponding OpMode
- * class is instantiated on the Robot Controller and executed.
- * <p>
- * This particular OpMode just executes a basic Tank Drive Teleop for a PushBot
- * It includes all the skeletal structure that all linear OpModes contain.
- * <p>
- * Use Android Studios to Copy this Class, and Paste it into your team's code folder with a new name.
- * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
- */
-
-@TeleOp(name = "OurBot", group = "Linear Opmode")  // @Autonomous(...) is the other common choice
+@TeleOp(name = "OurBot", group = "TeleOp")
 //@Disabled
 public class OurBot extends LinearOpMode {
 
-    /* Declare OpMode members. */
     private ElapsedTime runtime = new ElapsedTime();
-    // DcMotor leftMotor = null;
-    // DcMotor rightMotor = null;
 
-    DcMotor[] leftDrive = null;
-    DcMotor[] rightDrive = null;
-    DcMotor[] allDrive = null;
+    DcMotor[] leftDrive = new DcMotor[2];
+    DcMotor[] rightDrive = new DcMotor[2];
+    DcMotor[] allDrive = new DcMotor[4];
 
+    DcMotor[] intakeSpinner = new DcMotor[1];
+    DcMotor[] intakeLift = new DcMotor[1];
+    DcMotor[] hangingMotor = new DcMotor[1];
+    Servo hook;
 
-    DcMotor intakeMotor = null;
-    DcMotor lifterMotor = null;
+    LinearOpMode opMode;
 
-    DcMotor hangingMotor = null;
+    @Override
+    public void runOpMode() {
+        telemetry.addData("Status", "Initialized");
+        telemetry.update();
+
+        InitializeHardware();
+
+        waitForStart();
+        runtime.reset();
+
+        while (opModeIsActive()) {
+            telemetry.addData("Status", "Run Time: " + runtime.toString());
+            telemetry.addData("trigger", "Trigger: " + gamepad1.right_trigger);
+            telemetry.update();
+
+            if ((gamepad1.left_bumper == false) && (gamepad1.right_bumper == false)) {
+                setPower(leftDrive, .5 * (-gamepad1.left_stick_y));
+                setPower(rightDrive, .5 * (-gamepad1.right_stick_y));
+            }
+
+            if (gamepad2.a == true) {
+                setPower(intakeSpinner, 100);
+            }
+            if (gamepad2.b == true) {
+                setPower(intakeSpinner, -100);
+            } //intakeSpinner.setPower(0);
+            if ((gamepad2.a == false) && (gamepad2.b == false)) {
+                setPower(intakeSpinner, 0);
+            }
+
+            setPower(intakeLift, gamepad2.right_trigger);
+            setPower(intakeLift, -gamepad2.right_trigger);
+
+            //hanging motor on if gamepad2 dpad up arrow pressed, down if down pressed
+            if (gamepad2.dpad_up == true) {
+                setPower(hangingMotor, 50);
+            }
+            if (gamepad2.dpad_down == true) {
+                setPower(hangingMotor, -50);
+            }
+            if ((gamepad2.dpad_up == false) && (gamepad2.dpad_down == false)) {
+                setPower(hangingMotor, 0);
+            }
+
+            /*
+            //set hanging to exact height
+            if (gamepad2.b) {
+                setHang();
+            }
+            */
+
+            // set hook servo position up when gamepad2 x is pressed, return when y pressed
+            if (gamepad2.x == true) {
+                hook.setPosition(0);
+            }
+            if (gamepad2.y == true) {
+                hook.setPosition(0.5);
+            }
+        }
+    }
 
     public void InitializeHardware() {
+        // initialize drive motors
         leftDrive[0] = hardwareMap.dcMotor.get("Left_Front");
         leftDrive[1] = hardwareMap.dcMotor.get("Left_Back");
 
@@ -52,19 +99,51 @@ public class OurBot extends LinearOpMode {
         allDrive[2] = hardwareMap.dcMotor.get("Right_Front");
         allDrive[3] = hardwareMap.dcMotor.get("Right_Back");
 
+        setDirection(leftDrive, DcMotorSimple.Direction.FORWARD);
+        setDirection(rightDrive, DcMotorSimple.Direction.REVERSE);
+
         setMode(allDrive, DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        intakeMotor = hardwareMap.dcMotor.get("Intake");
-        lifterMotor = hardwareMap.dcMotor.get("Intake_Lifter");
+        // initialize intake spinner & intake lift motors
+        intakeSpinner[0] = hardwareMap.dcMotor.get("Intake_Spinner");
+        intakeLift[0] = hardwareMap.dcMotor.get("Intake_Lift");
 
-        hangingMotor = hardwareMap.dcMotor.get("Hanging");
+        setDirection(intakeSpinner, DcMotorSimple.Direction.FORWARD);
+        setDirection(intakeLift, DcMotorSimple.Direction.REVERSE);
+
+        setMode(intakeSpinner, DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        setMode(hangingMotor, DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        // initialize hanging motor
+        hangingMotor[0] = hardwareMap.dcMotor.get("Hanging");
+        setDirection(hangingMotor, DcMotorSimple.Direction.REVERSE);
+
+        // initialize hook servo
+        hook = hardwareMap.servo.get("Hook");
     }
-
 
     private void setMode(DcMotor[] motors, DcMotor.RunMode mode) {
         for (DcMotor motor : motors) {
             motor.setMode(mode);
         }
+    }
+
+    private void setDistance(DcMotor[] motors, double distance) {
+        double ticksPerIn = 1;
+        double target = distance * ticksPerIn;
+        for (DcMotor motor : motors) {
+            motor.setTargetPosition((int) Math.round(target));
+        }
+
+    }
+
+    private boolean isBusy(DcMotor[] motors) {
+        for (DcMotor motor : motors) {
+            if (motor.isBusy()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void setPower(DcMotor[] motors, double power) {
@@ -73,49 +152,46 @@ public class OurBot extends LinearOpMode {
         }
     }
 
-    @Override
-    public void runOpMode() {
-        telemetry.addData("Status", "Initialized");
-        telemetry.update();
-
-        InitializeHardware();
-
-        // Wait for the game to start (driver presses PLAY)
-        waitForStart();
-        runtime.reset();
-
-        // run until the end of the match (driver presses STOP)
-        while (opModeIsActive()) {
-            telemetry.addData("Status", "Run Time: " + runtime.toString());
-            telemetry.update();
-
-            double leftPower = -gamepad1.left_stick_y;
-            double rightPower = -gamepad1.right_stick_y;
-
-            setPower(leftDrive, leftPower);
-            setPower(rightDrive, rightPower);
-
-            /*
-            leftMotorFront.setPower(-gamepad1.left_stick_y);
-            leftMotorBack.setPower(-gamepad1.left_stick_y);
-            rightMotorFront.setPower(-gamepad1.right_stick_y);
-            rightMotorBack.setPower(-gamepad1.right_stick_y);
-            */
-
-           /* intakeMotor.setPower(-gamepad1.right_trigger);
-            armMotor.setPower(-gamepad1.left_trigger);
-            */
-
-            while (gamepad1.dpad_up) ;
-            {
-                hangingMotor.setPower(0.5);
-            }
-            while (gamepad1.dpad_down) ;
-            {
-                hangingMotor.setPower(-0.5);
-            }
+    private void setDirection(DcMotor[] motors, DcMotorSimple.Direction direction) {
+        for (DcMotor motor : motors) {
+            motor.setDirection(direction);
         }
-
     }
 
+    private void setHang() {
+        int hangHeight = 3;
+
+        setMode(hangingMotor, DcMotor.RunMode.RUN_USING_ENCODER);
+
+        // Reset encoders
+        setMode(hangingMotor, DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        // set target position
+        setDistance(hangingMotor, hangHeight);
+
+        // Set to RUN_TO_POSITION mode
+        setMode(hangingMotor, DcMotor.RunMode.RUN_TO_POSITION);
+
+        telemetry.addData("PhilSwiftDrive", "about to start");
+        telemetry.update();
+
+        // Set drive power
+        setPower(hangingMotor, 1);
+
+        telemetry.addData("PhilSwiftDrive", "started");
+        telemetry.update();
+
+        while (isBusy(hangingMotor) && opMode.opModeIsActive()) {
+            //wait until target position in reached
+        }
+
+        telemetry.addData("PhilSwiftDrive", "finished, stopping");
+        telemetry.update();
+        // Stop and change modes back to normal
+        setPower(hangingMotor, 0);
+
+        telemetry.addData("PhilSwiftDrive", "stopped");
+        telemetry.update();
+    }
 }
+
