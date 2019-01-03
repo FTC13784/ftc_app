@@ -21,7 +21,7 @@ public class AutonomousOpMode extends LinearOpMode {
         telemetry.update();
 
         //distance & wheelRadius measurements in inches
-        philSwift = new PhilSwift(this, 2, 1120);
+        philSwift = new PhilSwift(this);
 
         telemetry.addData("Status", "PhilSwift Initialized");
         telemetry.update();
@@ -31,7 +31,7 @@ public class AutonomousOpMode extends LinearOpMode {
         telemetry.addData("Status", "Start received");
         telemetry.update();
 
-        philSwift.drive(12, 0.5);
+        philSwift.drive(12, 0.9);
 
         telemetry.addData("Status", "Done driving");
         telemetry.update();

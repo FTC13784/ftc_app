@@ -30,15 +30,15 @@ public class OurAutonomousSample extends LinearOpMode {
     // DcMotor leftMotor = null;
     // DcMotor rightMotor = null;
 
-    DcMotor leftMotorFront = null;
-    DcMotor rightMotorFront = null;
-    DcMotor leftMotorBack = null;
-    DcMotor rightMotorBack = null;
+    DcMotor leftMotorFront;
+    DcMotor rightMotorFront;
+    DcMotor leftMotorBack;
+    DcMotor rightMotorBack;
 
-    DcMotor intakeMotor = null;
-    DcMotor armMotor = null;
+    DcMotor intakeMotor;
+    DcMotor armMotor;
 
-    DcMotor hangingMotor = null;
+    DcMotor hangingMotor;
 
     @Override
     public void runOpMode() throws InterruptedException {

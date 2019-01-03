@@ -8,9 +8,9 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@TeleOp(name = "MayaNewTeleop", group = "TeleOp")
+@TeleOp(name = "Working Teleop", group = "TeleOp")
 //@Disabled
-public class OurBot extends LinearOpMode {
+public class WorkingTeleop extends LinearOpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
 
@@ -91,8 +91,8 @@ public class OurBot extends LinearOpMode {
             if (gamepad2.y) {
                 hook.setPosition(0.5);
             }
-
         }
+
     }
 
     private void InitializeHardware() {
@@ -136,7 +136,6 @@ public class OurBot extends LinearOpMode {
         for (DcMotor motor : motors) {
             motor.setTargetPosition((int) Math.round(target));
         }
-
     }
 
     private boolean isBusy(DcMotor[] motors) {
@@ -166,7 +165,6 @@ public class OurBot extends LinearOpMode {
         for (DcMotor motor : motors) {
             motor.setTargetPosition((int) Math.round(target));
         }
-
     }
 
     private void setHang() {

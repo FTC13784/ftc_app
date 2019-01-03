@@ -20,7 +20,7 @@ public class RedCrater extends LinearOpMode {
         telemetry.addData("Status", "About to create philSwift");
         telemetry.update();
 
-        philSwift = new PhilSwift(this, 2, 1120);
+        philSwift = new PhilSwift(this);
 
         telemetry.addData("Status", "PhilSwift Initialized");
         telemetry.update();

@@ -28,17 +28,27 @@ public class PhilSwift {
 
     HardwareMap hardwareMap;
 
+    double ticksPerInWheel;
 
-    double ticksPerIn = 3;
+    double ticksPerInHang;
+
+    double wheelRadius = 2;
+
+    double hangGearDiameter = 0.75;
 
     Telemetry telemetry;
 
-    public PhilSwift(LinearOpMode opMode, double wheelRadius, double ticksPerRev) {
+    double ticksPerWheelRev = 1120;
+
+    double ticksPerHangRev = 1680;
+
+    public PhilSwift(LinearOpMode opMode) {
         this.opMode = opMode;
         hardwareMap = opMode.hardwareMap;
         telemetry = opMode.telemetry;
         InitializeHardware();
-        ticksPerIn = ticksPerRev / (wheelRadius * Math.PI * 2);
+        ticksPerInWheel = ticksPerWheelRev / (wheelRadius * Math.PI * 2);
+        ticksPerInHang = ticksPerHangRev / (hangGearDiameter * Math.PI);
     }
 
     private void InitializeHardware() {
@@ -55,8 +65,6 @@ public class PhilSwift {
         allDrive[1] = hardwareMap.dcMotor.get("Left_Back");
         allDrive[2] = hardwareMap.dcMotor.get("Right_Front");
         allDrive[3] = hardwareMap.dcMotor.get("Right_Back");
-
-        setMode(allDrive, DcMotor.RunMode.RUN_USING_ENCODER);
 
         // initialize intake spinner & intake lift motors
         intakeSpinner[0] = hardwareMap.dcMotor.get("Intake_Spinner");
@@ -85,8 +93,16 @@ public class PhilSwift {
         }
     }
 
-    private void setDistance(DcMotor[] motors, double distance) {
-        double target = distance * ticksPerIn;
+    private void setWheelDistance(DcMotor[] motors, double distance) {
+        double target = distance * ticksPerInWheel;
+        for (DcMotor motor : motors) {
+            motor.setTargetPosition((int) Math.round(target));
+        }
+
+    }
+
+    private void setHangDistance(DcMotor[] motors, double distance) {
+        double target = distance * ticksPerInHang;
         for (DcMotor motor : motors) {
             motor.setTargetPosition((int) Math.round(target));
         }
@@ -113,39 +129,30 @@ public class PhilSwift {
      * positive distance is forward, negative distance is backward
      *
      * @param distance distance in inches
-     * @param speed    speed btwn 0 and 1
+     * @param speed    speed btwn -1 and 1
      */
     public void drive(double distance, double speed) {
+
+        setMode(allDrive, DcMotor.RunMode.RUN_USING_ENCODER);
 
         // Reset encoders
         setMode(allDrive, DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         // set target position
-        setDistance(allDrive, distance);
+        setWheelDistance(allDrive, distance);
 
         // Set to RUN_TO_POSITION mode
         setMode(allDrive, DcMotor.RunMode.RUN_TO_POSITION);
 
-        telemetry.addData("PhilSwiftDrive", "about to start");
-        telemetry.update();
-
         // Set drive power
         setPower(allDrive, speed);
-
-        telemetry.addData("PhilSwiftDrive", "started");
-        telemetry.update();
 
         while (isBusy(allDrive) && opMode.opModeIsActive()) {
             //wait until target position in reached
         }
 
-        telemetry.addData("PhilSwiftDrive", "finished, stopping");
-        telemetry.update();
         // Stop and change modes back to normal
         setPower(allDrive, 0);
-
-        telemetry.addData("PhilSwiftDrive", "stopped");
-        telemetry.update();
 
         setMode(allDrive, DcMotor.RunMode.RUN_USING_ENCODER);
     }
@@ -158,7 +165,7 @@ public class PhilSwift {
      * @param speed   speed btwn 0 and 1
      */
     public void turn(int degrees, double speed) {
-
+        
     }
 
 
@@ -174,41 +181,27 @@ public class PhilSwift {
 
 
     /**
-     * sets hanging mechanism to hanging height, assumes that robot is not haging when this called
+     * sets hanging mechanism to hanging height, assumes that robot is not hanging when this called
      */
     public void setHang() {
         int hangHeight = 3;
 
         setMode(hangingMotor, DcMotor.RunMode.RUN_USING_ENCODER);
 
-        // Reset encoders
         setMode(hangingMotor, DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        // set target position
-        setDistance(hangingMotor, hangHeight);
+        setHangDistance(hangingMotor, hangHeight);
 
-        // Set to RUN_TO_POSITION mode
         setMode(hangingMotor, DcMotor.RunMode.RUN_TO_POSITION);
 
-        telemetry.addData("PhilSwiftDrive", "about to start");
-        telemetry.update();
-
-        // Set drive power
         setPower(hangingMotor, 1);
-
-        telemetry.addData("PhilSwiftDrive", "started");
-        telemetry.update();
 
         while (isBusy(hangingMotor) && opMode.opModeIsActive()) {
             //wait until target position in reached
-        }
+            }
 
-        telemetry.addData("PhilSwiftDrive", "finished, stopping");
-        telemetry.update();
         // Stop and change modes back to normal
         setPower(hangingMotor, 0);
 
-        telemetry.addData("PhilSwiftDrive", "stopped");
-        telemetry.update();
     }
 }

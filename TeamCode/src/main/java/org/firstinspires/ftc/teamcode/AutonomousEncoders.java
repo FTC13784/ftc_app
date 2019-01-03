@@ -22,17 +22,17 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  */
 
 @Autonomous(name="AutonomousEncoders", group="Linear Opmode")  // @Autonomous(...) is the other common choice
-@Disabled
+//@Disabled
 public class AutonomousEncoders extends LinearOpMode {
 
     /* Declare OpMode members. */
     private ElapsedTime runtime = new ElapsedTime();
 
     //declare motors
-    DcMotor leftMotorFront = null;
-    DcMotor rightMotorFront = null;
-    DcMotor leftMotorBack = null;
-    DcMotor rightMotorBack = null;
+    DcMotor leftMotorFront;
+    DcMotor rightMotorFront;
+    DcMotor leftMotorBack;
+    DcMotor rightMotorBack;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -56,7 +56,7 @@ public class AutonomousEncoders extends LinearOpMode {
         rightMotorBack = hardwareMap.dcMotor.get("Right_Back");
 
     }
-    double DRIVE_POWER = 1.0;
+    double DRIVE_POWER = 0.75;
 
     int ANDYMARK_TICKS_PER_REV = 1120;
     double TICKS_PER_REV = ANDYMARK_TICKS_PER_REV;

@@ -11,7 +11,7 @@ import net.pps.lincoln.team13784.PhilSwift;
 @Disabled
 public class RedDepot extends LinearOpMode {
 
-    PhilSwift philSwift = null;
+    PhilSwift philSwift;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -20,7 +20,7 @@ public class RedDepot extends LinearOpMode {
         telemetry.addData("Status", "About to create philSwift");
         telemetry.update();
 
-        philSwift = new PhilSwift(this, 2, 1120);
+        philSwift = new PhilSwift(this);
 
         telemetry.addData("Status", "PhilSwift Initialized");
         telemetry.update();
