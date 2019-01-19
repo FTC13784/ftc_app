@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -49,6 +50,11 @@ public class PhilSwift {
         InitializeHardware();
         ticksPerInWheel = ticksPerWheelRev / (wheelRadius * Math.PI * 2);
         ticksPerInHang = ticksPerHangRev / (hangGearDiameter * Math.PI);
+        telemetry.addData("LF:", allDrive[0].getCurrentPosition());
+        telemetry.addData("LB:", allDrive[1].getCurrentPosition());
+        telemetry.addData("RF:", allDrive[2].getCurrentPosition());
+        telemetry.addData("RB:", allDrive[3].getCurrentPosition());
+        telemetry.update();
     }
 
     private void InitializeHardware() {
@@ -93,12 +99,13 @@ public class PhilSwift {
         }
     }
 
-    private void setWheelDistance(DcMotor[] motors, double distance) {
+    private void setWheelTargetPosition(DcMotor[] motors, double distance) {
         double target = distance * ticksPerInWheel;
         for (DcMotor motor : motors) {
-            motor.setTargetPosition((int) Math.round(target));
-        }
 
+            double targetPosition = Math.round(target);
+            motor.setTargetPosition((int) targetPosition);
+        }
     }
 
     private void setHangDistance(DcMotor[] motors, double distance) {
@@ -124,6 +131,10 @@ public class PhilSwift {
         }
     }
 
+    public void StopDriving(){
+        setPower(allDrive, 0);
+    }
+
     /**
      * drive distance specified
      * positive distance is forward, negative distance is backward
@@ -133,15 +144,11 @@ public class PhilSwift {
      */
     public void drive(double distance, double speed) {
 
-        setMode(allDrive, DcMotor.RunMode.RUN_USING_ENCODER);
-
-        // Reset encoders
         setMode(allDrive, DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         // set target position
-        setWheelDistance(allDrive, distance);
+        setWheelTargetPosition(allDrive, distance);
 
-        // Set to RUN_TO_POSITION mode
         setMode(allDrive, DcMotor.RunMode.RUN_TO_POSITION);
 
         // Set drive power
@@ -149,11 +156,12 @@ public class PhilSwift {
 
         while (isBusy(allDrive) && opMode.opModeIsActive()) {
             //wait until target position in reached
+            RobotLog.d("LF: "  + allDrive[0].getCurrentPosition());
+            RobotLog.d("LB: " + allDrive[1].getCurrentPosition());
+            RobotLog.d("RF: " + allDrive[2].getCurrentPosition());
+            RobotLog.d("RB: " + allDrive[3].getCurrentPosition());
         }
-
-        // Stop and change modes back to normal
-        setPower(allDrive, 0);
-
+        StopDriving();
         setMode(allDrive, DcMotor.RunMode.RUN_USING_ENCODER);
     }
 

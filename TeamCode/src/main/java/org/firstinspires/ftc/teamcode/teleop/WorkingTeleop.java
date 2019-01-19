@@ -1,6 +1,7 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.teleop;
 
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -41,55 +42,68 @@ public class WorkingTeleop extends LinearOpMode {
             telemetry.addData("LB:", allDrive[1].getCurrentPosition());
             telemetry.addData("RF:", allDrive[2].getCurrentPosition());
             telemetry.addData("RB:", allDrive[3].getCurrentPosition());
+            telemetry.addData("Hang:", hangingMotor[0].getCurrentPosition());
             telemetry.update();
 
             // set drive power
-            setPower(leftDrive, gamepad1.left_stick_y*0.7);
-            setPower(rightDrive, gamepad1.right_stick_y*0.7);
+            setPower(leftDrive, gamepad1.left_stick_y * 0.7);
+            setPower(rightDrive, gamepad1.right_stick_y * 0.7);
 
             // built in "dead zone" on joystick
-            if(Math.abs(gamepad1.left_stick_y) < 0.05){
-                gamepad1.left_stick_y =0;
+            if (Math.abs(gamepad1.left_stick_y) < 0.1) {
+                gamepad1.left_stick_y = 0;
             }
-            if(Math.abs(gamepad1.right_stick_y) < 0.05){
-                gamepad1.right_stick_y =0;
+            if (Math.abs(gamepad1.right_stick_y) < 0.1) {
+                gamepad1.right_stick_y = 0;
             }
 
             // when a on gamepad2 pressed, intake mechanism takes in minerals.
             // when b on gamepad2 pressed, intake mechanism outputs minerals.
-            if(gamepad2.a){
+            if (gamepad2.a) {
                 setPower(intakeSpinner, 100);
             }
-            if(gamepad2.b){
+            if (gamepad2.b) {
                 setPower(intakeSpinner, -100);
             }
-            if(!gamepad2.a && !gamepad2.b){
+            if (!gamepad2.a && !gamepad2.b) {
                 setPower(intakeSpinner, 0);
             }
 
             // when right trigger on gamepad2 is pressed, the intake mechanism lifts up.
             // when left trigger on gamepad2 is pressed, the intake mechanism lowers down. (in theory)
-            setPower(intakeLift, gamepad2.right_trigger);
-            setPower(intakeLift, -gamepad2.left_trigger);
+            if (gamepad2.right_trigger > 0.3) {
+                setPower(intakeLift, gamepad2.right_trigger);
+            }
+            else if (gamepad2.left_trigger > 0.3) {
+                setPower(intakeLift, -gamepad2.left_trigger);
+            }
 
             // when dpad up arrow is pressed on the gamepad2, hanging mechanism goes up.
             // when dpad down arrow is pressed on gamepad2, hanging mechanism goes down.
-            if(gamepad2.dpad_up){
-                setPower(hangingMotor, 50);
+            if (gamepad2.dpad_up) {
+                setPower(hangingMotor, 75);
             }
-            if(gamepad2.dpad_down){
-                setPower(hangingMotor, -50);
+            if (gamepad2.dpad_down) {
+                setPower(hangingMotor, -75);
             }
-            if(!gamepad2.dpad_up && !gamepad2.dpad_down){
+            if (!gamepad2.dpad_up && !gamepad2.dpad_down) {
                 setPower(hangingMotor, 0);
             }
 
-            // set hook servo position up when gamepad2 x is pressed, return when y pressed
+            // set hook servo position up when gamepad2 y is pressed, return when x pressed
+            if (gamepad2.y) {
+                hook.setPosition(0.4);
+            }
             if (gamepad2.x) {
                 hook.setPosition(0);
             }
-            if (gamepad2.y) {
-                hook.setPosition(0.5);
+
+            // assuming hanging mechanism is all the way down,
+            if (gamepad2.dpad_left && !gamepad2.dpad_down && !gamepad2.dpad_up) {
+                //assumes hanging mechanism is all the way down
+                setPower(hangingMotor, -1);
+                sleep(1300);
+                setPower(hangingMotor, 0);
             }
         }
 
@@ -169,7 +183,7 @@ public class WorkingTeleop extends LinearOpMode {
 
     private void setHang() {
         int hangHeight = 3;
-
+        //at the lowest, the hanging mechanism is at 17.5 in. it needs to go up to 23 in to hang.
 
         setMode(hangingMotor, DcMotor.RunMode.RUN_USING_ENCODER);
 
@@ -192,4 +206,33 @@ public class WorkingTeleop extends LinearOpMode {
         // Stop and change modes back to normal
         setPower(hangingMotor, 0);
     }
+
+    public void lowerHanging() {
+        setPower(hangingMotor, -1);
+        sleep(1300);
+        setPower(hangingMotor, 0);
+    }
+
+    public void setUpHang() {
+        //assumes the hanging mechanism is all the way down and the servo is all the way down.
+        setPower(hangingMotor, 1);
+        sleep(1300);
+        setPower(hangingMotor, 1);
+
+        if ((hangingMotor[0].getPower()) == 0 && opModeIsActive()) {
+            hook.setPosition(1);
+        }
+    }
+
+    public void hang() {
+        //assumes the hanging mechanism is up & the hook is up in the lander's latch & the h
+        setPower(hangingMotor, 1);
+        sleep(1300);
+        setPower(hangingMotor, 1);
+
+        if ((hangingMotor[0].getPower()) == 0 && opModeIsActive()) {
+            hook.setPosition(1);
+        }
+    }
+
 }

@@ -1,45 +1,44 @@
-package net.pps.lincoln.team13784.net.pps.lincoln.team13784.autonomous;
+package org.firstinspires.ftc.teamcode.LightningAutonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
-import net.pps.lincoln.team13784.PhilSwift;
 
-
-@Autonomous(name = "RedDepot", group = "Linear Opmode")
+@Autonomous(name = "Depot Start TEST", group = "Linear Opmode")
 @Disabled
-public class RedDepot extends LinearOpMode {
+public class DepotStartTest extends LinearOpMode {
 
-    PhilSwift philSwift;
+    private ElapsedTime runtime = new ElapsedTime();
+
+    OurBot ourBot;
 
     @Override
     public void runOpMode() throws InterruptedException {
-        //distance & wheelRadius measurements in inches
-        telemetry.addData("Status", "About to create philSwift");
-        telemetry.update();
-
-        philSwift = new PhilSwift(this);
-
+        ourBot = new OurBot(this);
         telemetry.addData("Status", "OurBot Initialized");
         telemetry.update();
 
         waitForStart();
+        runtime.reset();
 
         telemetry.addData("Status", "Start received");
         telemetry.update();
 
-        //deploy
+        ourBot.deploy();
+
         //drive forward 35? in
-        //drive back 10 cm
+        ourBot.DriveDistance(1, 3119);
+
+        //drive back 10 in
+        ourBot.DriveDistance(-1, 891);
+
         // turn 90? degrees to the left
         //drive forward 40? in
         // turn left in place 45? degrees
         //drive forward 50? cm
 
 
-        telemetry.addData("Status", "Done driving");
-        telemetry.update();
     }
-
 }

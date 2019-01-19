@@ -7,11 +7,11 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import net.pps.lincoln.team13784.PhilSwift;
 
 
-@Autonomous(name = "RedDepot", group = "Linear Opmode")
+@Autonomous(name = "RedCrater", group = "Linear Opmode")
 @Disabled
 public class RedCrater extends LinearOpMode {
 
-    PhilSwift philSwift = null;
+    PhilSwift philSwift;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -22,7 +22,7 @@ public class RedCrater extends LinearOpMode {
 
         philSwift = new PhilSwift(this);
 
-        telemetry.addData("Status", "PhilSwift Initialized");
+        telemetry.addData("Status", "OurBot Initialized");
         telemetry.update();
 
         waitForStart();
@@ -32,7 +32,7 @@ public class RedCrater extends LinearOpMode {
 
         //deploy
         //drive forward 35? in
-        //drive back 10 cm
+        //drive back 10 in
         // drive forward 30? in
         // lower intake
         //turn on output and deploy team marker

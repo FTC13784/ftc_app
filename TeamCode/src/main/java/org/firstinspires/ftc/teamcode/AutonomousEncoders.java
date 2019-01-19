@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.RobotLog;
 
 /**
  * This file contains an minimal example of a Linear "OpMode". An OpMode is a 'program' that runs in either
@@ -22,7 +23,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  */
 
 @Autonomous(name="AutonomousEncoders", group="Linear Opmode")  // @Autonomous(...) is the other common choice
-//@Disabled
+@Disabled
 public class AutonomousEncoders extends LinearOpMode {
 
     /* Declare OpMode members. */
@@ -33,6 +34,10 @@ public class AutonomousEncoders extends LinearOpMode {
     DcMotor rightMotorFront;
     DcMotor leftMotorBack;
     DcMotor rightMotorBack;
+
+    double ticksPerWheelRev = 1120;
+    double wheelRadius = 2; //inches
+    double ticksPerInWheel = (1 / (wheelRadius * Math.PI * 2)) * ticksPerWheelRev;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -45,23 +50,22 @@ public class AutonomousEncoders extends LinearOpMode {
         runtime.reset();
 
         //put instructions in here
-        DriveForwardDistance(DRIVE_POWER, 400);
+        DriveForwardDistance(1, 12);
+        StopDriving();
     }
 
     public void InitializeHardware()
     {
         leftMotorFront = hardwareMap.dcMotor.get("Left_Front");
-        rightMotorFront = hardwareMap.dcMotor.get("Right_Front");
         leftMotorBack = hardwareMap.dcMotor.get("Left_Back");
+        rightMotorFront = hardwareMap.dcMotor.get("Right_Front");
         rightMotorBack = hardwareMap.dcMotor.get("Right_Back");
 
+        leftMotorFront.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftMotorBack.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightMotorFront.setDirection(DcMotorSimple.Direction.FORWARD);
+        rightMotorBack.setDirection(DcMotorSimple.Direction.FORWARD);
     }
-    double DRIVE_POWER = 0.75;
-
-    int ANDYMARK_TICKS_PER_REV = 1120;
-    double TICKS_PER_REV = ANDYMARK_TICKS_PER_REV;
-    int R_OF_WHEEL = 5;
-    // double ONE_CM = (TICKS_PER_REV*1)/(Math.PI)*2*R_OF_WHEEL);
 
     public void DriveForward(double power)
     {
@@ -71,7 +75,7 @@ public class AutonomousEncoders extends LinearOpMode {
         rightMotorBack.setPower(power);
     }
 
-    public void DriveForwardDistance(double power, int distance)
+    public void DriveForwardDistance(double power, double distance)
     {
         // Reset encoders
         leftMotorFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -80,15 +84,12 @@ public class AutonomousEncoders extends LinearOpMode {
         rightMotorBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         // set target position
-        leftMotorFront.setTargetPosition(distance);
-        rightMotorFront.setTargetPosition(distance);
-        leftMotorBack.setTargetPosition(distance);
-        rightMotorBack.setTargetPosition(distance);
+        //RobotLog.d("Setting target postion:" + (int) (distance * ticksPerInWheel));
+        leftMotorFront.setTargetPosition((int) ((distance * ticksPerInWheel)));
+        rightMotorFront.setTargetPosition((int) ((distance * ticksPerInWheel)));
+        leftMotorBack.setTargetPosition((int) ((distance * ticksPerInWheel)));
+        rightMotorBack.setTargetPosition((int) ((distance * ticksPerInWheel)));
 
-        /*
-        how many ticks for 1 cm?
-        =(TICKS_PER_REV*1)/(PI()*2*R_OF_WHEEL)
-         */
         // Set to RUN_TO_POSITION mode
         leftMotorFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rightMotorFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -122,6 +123,7 @@ public class AutonomousEncoders extends LinearOpMode {
         Thread.sleep(time);
     }
 
+    /*
     public void TurnLeft(double power)
     {
         leftMotorFront.setPower(-power);
@@ -206,4 +208,5 @@ public class AutonomousEncoders extends LinearOpMode {
         leftMotorBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightMotorBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
+    */
 }
