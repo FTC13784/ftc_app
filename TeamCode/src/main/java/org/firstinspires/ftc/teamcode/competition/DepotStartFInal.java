@@ -7,9 +7,9 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@Autonomous(name = "Only    Depot Start", group = "Linear Opmode")
+@Autonomous(name = "Final Depot Start", group = "Linear Opmode")
 //@Disabled
-public class DepotStart extends LinearOpMode {
+public class DepotStartFInal extends LinearOpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
 
@@ -38,18 +38,24 @@ public class DepotStart extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
-        //deploy();
+        deploy();
 
-        intakeLift.setPower(1);
-        sleep(500);
-        intakeLift.setPower(0);
-
-
-
-        /*
-        DriveForwardDistance(100, 3620);
+        DriveForwardDistance(70, 3*1120);
         StopDriving();
-        */
+
+        intakeSpinner.setPower(1);
+        sleep(2000);
+        intakeSpinner.setPower(0);
+
+        leftMotorBack.setPower(-0.5);
+        leftMotorFront.setPower(-0.5);
+        sleep(2000);
+        leftMotorBack.setPower(0);
+        leftMotorFront.setPower(0);
+
+
+        Drive(-1);
+        sleep(5000);
 
         /*
         //straighten
@@ -58,24 +64,6 @@ public class DepotStart extends LinearOpMode {
         sleep(250);
         StopDriving();
         */
-
-        /*
-        //get to position that picture is
-        DriveForwardDistance(100, 2500);
-        StopDriving();
-        */
-
-        intakeSpinner.setPower(-100);
-        sleep(500);
-
-        intakeLift.setPower(-1);
-        sleep(1000);
-
-        leftMotorBack.setPower(0.5);
-        leftMotorFront.setPower(0.5);
-        sleep(250);
-        StopDriving();
-
     }
 
     public void InitializeHardware() {
@@ -101,7 +89,7 @@ public class DepotStart extends LinearOpMode {
         hook = hardwareMap.servo.get("Hook");
     }
 
-    public void DriveForward(double power) {
+    public void Drive(double power) {
         leftMotorFront.setPower(power);
         leftMotorBack.setPower(power);
         rightMotorFront.setPower(power);
@@ -129,7 +117,7 @@ public class DepotStart extends LinearOpMode {
         rightMotorBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         // Set drive power
-        DriveForward(power);
+        Drive(power);
 
         while(leftMotorFront.isBusy() && rightMotorFront.isBusy() && leftMotorBack.isBusy() && rightMotorBack.isBusy() && opModeIsActive()) {
             // Wait until target position is reached
@@ -162,7 +150,7 @@ public class DepotStart extends LinearOpMode {
 
         leftMotorFront.setTargetPosition(distance);
 
-        DriveForward(power);
+        Drive(power);
 
         while (Math.abs(leftMotorFront.getCurrentPosition()) < (distance) && opModeIsActive()) {
             //wait until target position is reached
@@ -172,7 +160,7 @@ public class DepotStart extends LinearOpMode {
     }
 
     private void StopDriving() {
-        DriveForward(0);
+        Drive(0);
     }
 
     public void StopDrivingTime(double power, long time) throws InterruptedException {
@@ -182,12 +170,16 @@ public class DepotStart extends LinearOpMode {
 
     private void deploy() {
         hangingMotor.setPower(1);
-        sleep(1300);
+        sleep(2000);
         hangingMotor.setPower(0);
 
-        if ((hangingMotor.getPower()) == 0 && opModeIsActive()) {
-            hook.setPosition(0);
-        }
+        rightMotorBack.setPower(1);
+        rightMotorFront.setPower(1);
+        sleep(1000);
+
+        rightMotorBack.setPower(-1);
+        rightMotorFront.setPower(-1);
+        sleep(1000);
     }
 
     private void lowerHanging() {

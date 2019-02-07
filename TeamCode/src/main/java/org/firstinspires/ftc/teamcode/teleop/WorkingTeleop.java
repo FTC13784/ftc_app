@@ -20,7 +20,7 @@ public class WorkingTeleop extends LinearOpMode {
     DcMotor[] allDrive = new DcMotor[4];
 
     DcMotor[] intakeSpinner = new DcMotor[1];
-    DcMotor[] intakeLift = new DcMotor[1];
+    //DcMotor[] intakeLift = new DcMotor[1];
     DcMotor[] hangingMotor = new DcMotor[1];
     Servo hook;
 
@@ -46,8 +46,8 @@ public class WorkingTeleop extends LinearOpMode {
             telemetry.update();
 
             // set drive power
-            setPower(leftDrive, gamepad1.left_stick_y * 0.7);
-            setPower(rightDrive, gamepad1.right_stick_y * 0.7);
+            setPower(leftDrive, gamepad1.left_stick_y);
+            setPower(rightDrive, gamepad1.right_stick_y);
 
             // built in "dead zone" on joystick
             if (Math.abs(gamepad1.left_stick_y) < 0.1) {
@@ -69,6 +69,7 @@ public class WorkingTeleop extends LinearOpMode {
                 setPower(intakeSpinner, 0);
             }
 
+            /*
             // when right trigger on gamepad2 is pressed, the intake mechanism lifts up.
             // when left trigger on gamepad2 is pressed, the intake mechanism lowers down. (in theory)
             if (gamepad2.right_trigger > 0.3) {
@@ -77,6 +78,7 @@ public class WorkingTeleop extends LinearOpMode {
             else if (gamepad2.left_trigger > 0.3) {
                 setPower(intakeLift, -gamepad2.left_trigger);
             }
+            */
 
             // when dpad up arrow is pressed on the gamepad2, hanging mechanism goes up.
             // when dpad down arrow is pressed on gamepad2, hanging mechanism goes down.
@@ -127,10 +129,10 @@ public class WorkingTeleop extends LinearOpMode {
 
         // initialize intake spinner & intake lift motors
         intakeSpinner[0] = hardwareMap.dcMotor.get("Intake_Spinner"); //neverest60
-        intakeLift[0] = hardwareMap.dcMotor.get("Intake_Lift"); //tetrix motor
+        //intakeLift[0] = hardwareMap.dcMotor.get("Intake_Lift"); //tetrix motor
 
         setDirection(intakeSpinner, DcMotorSimple.Direction.FORWARD);
-        setDirection(intakeLift, DcMotorSimple.Direction.REVERSE);
+        //setDirection(intakeLift, DcMotorSimple.Direction.REVERSE);
 
         // initialize hanging motor
         hangingMotor[0] = hardwareMap.dcMotor.get("Hanging"); //neverest60

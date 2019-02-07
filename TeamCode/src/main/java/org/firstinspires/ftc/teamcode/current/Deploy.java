@@ -42,24 +42,10 @@ public class Deploy extends LinearOpMode {
         sleep(2000);
         hangingMotor.setPower(0);
 
-        rightMotorBack.setPower(1);
-        rightMotorFront.setPower(1);
-        sleep(1000);
-
-        rightMotorBack.setPower(-1);
-        rightMotorFront.setPower(-1);
-        sleep(1000);
-
-        rightMotorBack.setPower(1);
-        rightMotorFront.setPower(1);
-        sleep(1000);
-
-
-        /*if ((hangingMotor.getPower()) == 0 && opModeIsActive()) {
+        if ((hangingMotor.getPower()) == 0 && opModeIsActive()) {
             hook.setPosition(0);
         }
         //to output marker, you don't need to put intake mehanism down, just turn it on to go out
-        */
     }
 
     public void InitializeHardware() {

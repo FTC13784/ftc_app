@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@Autonomous(name = "Crater Start", group = "Linear Opmode")
+@Autonomous(name = "Final Crater Start", group = "Linear Opmode")
 //@Disabled
 public class CraterStart extends LinearOpMode {
 
@@ -42,6 +42,13 @@ public class CraterStart extends LinearOpMode {
 
         DriveForwardDistance(70, 3*1120);
         StopDriving();
+
+        leftMotorFront.setPower(-0.5);
+        leftMotorBack.setPower(-0.5);
+        sleep(500);
+
+        DriveForward(-1);
+        sleep(5000);
 
         /*
         //straighten
@@ -121,6 +128,38 @@ public class CraterStart extends LinearOpMode {
         rightMotorBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 
+    public void LeftDriveDistance(double power, int distance)
+    {
+        // Reset encoders
+        leftMotorFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftMotorBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        // set target position
+        leftMotorFront.setTargetPosition(distance);
+        leftMotorBack.setTargetPosition(distance);
+
+        // Set to RUN_TO_POSITION mode
+        leftMotorFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftMotorBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        // Set drive power
+        leftMotorBack.setPower(power);
+        leftMotorFront.setPower(power);
+
+        while(leftMotorFront.isBusy() && leftMotorBack.isBusy() && opModeIsActive()) {
+            // Wait until target position is reached
+        }
+        // Stop and change modes back to normal
+        leftMotorBack.setPower(0);
+        leftMotorFront.setPower(0);
+
+        leftMotorFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftMotorBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        leftMotorFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftMotorBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    }
+
 
     public void oneEncoderDrive(double power, int distance) {
 
@@ -159,22 +198,28 @@ public class CraterStart extends LinearOpMode {
         sleep(2000);
         hangingMotor.setPower(0);
 
+        hook.setPosition(0);
+
+
+
+        DriveForward(1);
+        sleep(2000);
+        DriveForward(0);
+
+        LeftDriveDistance(1, 1120);
+
+        DriveForward(50);
+        sleep(4000);
+        DriveForward(0);
+
+        /*
         rightMotorBack.setPower(1);
         rightMotorFront.setPower(1);
-        sleep(1000);
+        sleep(1800);
 
         rightMotorBack.setPower(-1);
         rightMotorFront.setPower(-1);
-        sleep(1000);
-
-        rightMotorBack.setPower(1);
-        rightMotorFront.setPower(1);
-        sleep(1000);
-
-        /*
-        if ((hangingMotor.getPower()) == 0 && opModeIsActive()) {
-            hook.setPosition(0);
-        }
+        sleep(1800);
         */
     }
 
